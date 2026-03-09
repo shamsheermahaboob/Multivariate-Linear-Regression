@@ -23,26 +23,55 @@ Use the final model to predict the output for new data.
 
 ## Program:
 ```
-Developed by:Shamsheer Banu M
-Register number:212225040400
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn import datasets,linear_model,metrics
+import pandas as pd
+from sklearn import linear_model, metrics
 from sklearn.model_selection import train_test_split
-housing=datasets.fetch_california_housing()
-x=housing.data
-y=housing.target
-x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.4,random_state=1)
-reg=linear_model.LinearRegression()
-reg.fit(x_train,y_train)
-print('Coefficients:',reg.coef_)
-print('Variance score:{}'.format(reg.score(x_test,y_test)))
+
+# load the boston dataset manually
+data_url = "http://lib.stat.cmu.edu/datasets/boston"
+raw_df = pd.read_csv(data_url, sep="\s+", skiprows=22, header=None)
+
+data = np.hstack([raw_df.values[::2, :], raw_df.values[1::2, :2]])
+target = raw_df.values[1::2, 2]
+
+X = data
+y = target
+
+# splitting X and y into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.4, random_state=1
+)
+
+# create linear regression object
+reg = linear_model.LinearRegression()
+
+# train the model
+reg.fit(X_train, y_train)
+
+# regression coefficients
+print('Coefficients: \n', reg.coef_)
+
+# variance score
+print('Variance score: {}'.format(reg.score(X_test, y_test)))
+
+# plot for residual error
 plt.style.use('fivethirtyeight')
-plt.scatter(reg.predict(x_train),reg.predict(x_train)-y_train,color="green",s=10,label='Train data')
-plt.scatter(reg.predict(x_test),reg.predict(x_test)-y_test,color="blue",s=10,label='Test data')
-plt.hlines(y=0,xmin=0,xmax=50,linewidth=2)
+
+# training data residuals
+plt.scatter(reg.predict(X_train), reg.predict(X_train) - y_train,
+            color="green", s=10, label='Train data')
+
+# test data residuals
+plt.scatter(reg.predict(X_test), reg.predict(X_test) - y_test,
+            color="blue", s=10, label='Test data')
+
+# zero error line
+plt.hlines(y=0, xmin=0, xmax=50, linewidth=2)
+
 plt.legend(loc='upper right')
-plt.title('residual Errors')
+plt.title("Residual errors")
 plt.show()
 
 
@@ -56,8 +85,8 @@ plt.show()
 ```
 ## Output:
 
+<img width="327" height="651" alt="image" src="https://github.com/user-attachments/assets/1caaf07f-f2f9-441b-a831-1c143a170329" />
 
-<img width="643" height="828" alt="image" src="https://github.com/user-attachments/assets/6fc2a09f-d9f3-4e5e-a6fb-573967264d63" />
 
 
 ## Result
